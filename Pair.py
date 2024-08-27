@@ -1,11 +1,11 @@
-import random
+from random import randrange
 def pair(list):
     unique = set() #check for repeat
     count = 0 #name of pair
     extra = None
     #check for extra student
-    if len(student)%2 == 1:
-        extra = random.randrange(len(student))
+    if len(student) % 2 == 1:
+        extra = randrange(len(student))
         unique.add(extra)
 
     #from the left, pair with random
@@ -13,16 +13,16 @@ def pair(list):
         if i in unique:
             continue
         unique.add(i)
-        index_pair2 =random.randrange(len(student))
+        index_pair2 = randrange(len(student))
         while index_pair2 in unique:
-            index_pair2 = random.randrange(len(student))
+            index_pair2 = randrange(len(student))
         unique.add(index_pair2)
-        count+=1
+        count += 1
         print(f'Group {count}: {student[i]} and {student[index_pair2]}')
 
     #assign extra to randomw group if there is an extra
     if extra != None:
-        print(f'\nExtra student "{student[extra]}" will be pair with Group {random.randrange(1,count+1)}.')
+        print(f'\nExtra student "{student[extra]}" will be pair with Group {randrange(1,count+1)}.')
 
 student = ['John', 'Jane', 'Alice', 'Bob', 'Charlie',
            'Daisy', 'Eve', 'Frank', 'Grace', 'Hank',
