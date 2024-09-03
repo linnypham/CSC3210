@@ -1,4 +1,4 @@
-def binary(number):
+def intergerToBinary(number):
     bin = []
     function = []
 
@@ -19,5 +19,13 @@ def binary(number):
     output2 = ''.join(map(str, bin))
     print(f'Binary number: {output2}')
 
-a = int(input('Input integer: '))
-print(binary(a))
+def binaryToInteger(number):
+    bin = list(str(number))
+    bin.reverse()
+    result = 0
+    for i in range(len(bin)):
+        if bin[i] == "1":
+            result += 2**(i)
+    return result
+
+print(binaryToInteger(1101))
