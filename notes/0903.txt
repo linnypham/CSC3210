@@ -1,0 +1,34 @@
+Logic Gates:
+AND
+OR
+NAND
+NOR
+Buffer
+NOT
+Terms:
+ minterms/maxterm
+ sum of products
+ Karnaugh Map (K-map)
+ encoding
+
+A + Anot ALways= 1
+A * Anot ALways= 0
+
+F = A + BC = A + BC(A +Anot) 
+  = A + ABC + AnotBC
+  = A(B + Bnot) +ABC +AnotBC
+  = AB(C+Cnot) +ABnot(C+Cnot)+ABC+AnotBC
+  = ABC + ABCnot +ABnotC +ABnotCnot +ABC +AnotBC
+  
+
+ In General:
+1. Analyze Each Term
+2. Fill in Missng terms by multiplying (X + Xnot) for all missing vars
+3. Expands
+
+F = A+BC
+  = (A+B)(A+C)
+  = (A+B+CCnot)(A+BBnot+C)
+  = (A+B+C)(A+B+Cnot)(A+B+C)(A+Bnot+C)
+  = (A+B+C)(A+B+Cnot)(A+Bnot+C)
+  
