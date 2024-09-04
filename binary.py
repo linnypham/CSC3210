@@ -28,4 +28,3 @@ def binaryToInteger(number):
             result += 2**(i)
     return result
 
-print(binaryToInteger(1101))
