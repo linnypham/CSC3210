@@ -1,5 +1,7 @@
 def toBinary(number):
     binary = []
+    if number == 0:
+        return 0
     while number > 0:
         remainder = number % 2
         number//=2
@@ -7,6 +9,8 @@ def toBinary(number):
     return ''.join(binary[::-1])
 
 def toHex(number):
+    if number == 0:
+        return 0
     hex = []
     dictionary = {10:'A', 11:'B',12:'C',13:'D',14:'E',15:'F'}
     while number > 0:

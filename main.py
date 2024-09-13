@@ -1,4 +1,5 @@
 from converter import toBinary,toHex
-
-print(toBinary(16))
-print(toHex(16))
+for i in range(0,6):
+    
+    print(toBinary(i))
+ 
