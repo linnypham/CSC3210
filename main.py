@@ -1,1 +1,3 @@
-print(chr(sum(range(ord(min(str(not())))))))
+from converter import toBinary
+for i in range(4):
+    print(toBinary(i))

@@ -1,4 +1,0 @@
-finite state machine diagram
-state transition table
-simplify (Karnauge map)
-logic circuits
