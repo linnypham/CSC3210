@@ -35,12 +35,22 @@ main:
     call  scanf
 
     ; Prompt for the second integer
+    mov   edi, prompt2
+    mov   eax, 0
+    call  printf
 
 
     ; Read the second integer
+    mov   edi, format
+    mov   esi, num2
+    mov   eax, 0
+    call  scanf
 
 
     ; Load the integers into registers and sum them
+    mov   rax, [num1]   ; Load the first integer into rax
+    add   rax, [num2]   ; Add the second integer to rax
+    mov   [sum], rax    ; Store the result in sum
 
 
     ; print the sum
