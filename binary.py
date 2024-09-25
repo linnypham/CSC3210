@@ -28,3 +28,5 @@ def binaryToInteger(number):
             result += 2**(i)
     return result
 
+print(intergerToBinary(32))
+
