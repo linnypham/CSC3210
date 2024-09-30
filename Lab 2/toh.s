@@ -1,55 +1,79 @@
-    .data
-movdisk:    .string "Move disk:"
-to:         .string "to:"
-newline:    .string "\n"
-disknum:    .word 4
+.data
+movdisk: .string "Move disk: "
+to: .string " to: "
+newline: .string "\n"
 
-    .text
-    .globl _start
-_start:
-    # Load the value of disknum into t0
-    lw t0, disknum      # t0 = number of disks
-    
-    # Calculate number of moves (2^n - 1)
-    li t1, 1            # t1 = 1
-    sll t1, t1, t0      # t1 = 2^disknum
-    addi t1, t1, -1     # t1 = 2^disknum - 1 (number of moves)
-    
-    # Initialize tower of hanoi variables
-    li t2, 1            # current move count (move number starts from 1)
-    li t3, 0            # previous disk moved (start with disk 0)
+# Input: number of disks
+disknum: .word 4
 
-next_move:
-    # Check if the current move count exceeds the number of moves
-    bge t2, t1, exit    # if current move >= number of moves, exit
-    
-    # Find which disk to move based on the current move number
-    # Disk to move = (move count & (move count - 1)) % 3
-    addi t4, t2, -1     # t4 = t2 - 1 (move number - 1)
-    and t5, t2, t4      # t5 = t2 & t4 (disk number to move)
-    
-    # Load and print the disk number
-    addi a0, t5, 1      # a0 = disk number to move (disk is 1-indexed)
-    la a1, movdisk
-    ecall               # print "Move disk"
-    
-    # Find the rod to move to (((move_count | move_count - 1) + 1) % 3) + 1
-    addi t4, t2, -1     # t4 = move count - 1
-    or t5, t2, t4       # t5 = move count | (move count - 1)
-    addi t5, t5, 1      # t5 = (move count | (move count - 1)) + 1
-    li t6, 3
-    rem t6, t5, t6      # t6 = ((x | x-1) + 1) % 3
-    addi t6, t6, 1      # t6 = rod to move to (1-indexed)
-    
-    # Print "to rod" with the disk number and rod
-    mv a0, t6          # a0 = rod number
-    la a1, to
-    ecall               # print "to rod"
-    
-    # Move to the next step
-    addi t2, t2, 1      # move count += 1
-    j next_move         # repeat for the next move
+.text
+toh:
+    # Load the value of disknum into a register
+    lw t0, disknum   # t0 = number of disks
+    li t3, 1         # t3 = counter for moves
+    li t4, 1         # t4 = current power of 2 (2^n)
+    li t5, 1         # t5 = total moves
 
-exit:
-    li a0, 10           # exit syscall
+calculate_moves:
+    # Calculate total moves (2^disknum - 1)
+    beq t0, x0, moves_calculated
+    slli t4, t4, 1     # t4 = 2^n (shift left by 1)
+    addi t0, t0, -1     # Decrement disknum
+    j calculate_moves
+
+moves_calculated:
+    addi t5, t4, -1    # t5 = total moves
+
+movedisk:
+    # Start the tower of hanoi with 0
+    li t1, 0         # previous number
+    li t2, 1         # current number
+
+whichdisk:
+    # Find the disk to move
+    li t6, 0         # t6 = disk number to move (0 indexed)
+    
+find_disk:
+    bge t1, t5, finish  # If previous number >= total moves, exit
+    add t6, t1, zero   # Move t1 to t6 to print
+    j towhichrod
+
+towhichrod:
+    # Find the rod to move the disk to
+    andi t7, t1, 3     # Calculate rod using (x % 3)
+    addi t7, t7, 1     # Convert 0-indexed to 1-indexed
+
+    # Print Move disk
+    la a0, movdisk
+    li a7, 4          # syscall for print_string
+    ecall
+    
+    # Print disk number
+    mv a0, t6         # Move disk number to a0 for printing
+    li a7, 1          # syscall for print_int
+    ecall
+    
+    # Print to
+    la a0, to
+    li a7, 4          # syscall for print_string
+    ecall
+    
+    # Print rod number
+    mv a0, t7         # Move rod number to a0 for printing
+    li a7, 1          # syscall for print_int
+    ecall
+    
+    # Print newline
+    la a0, newline
+    li a7, 4          # syscall for print_string
+    ecall
+
+nextstep:
+    # Update the previous and current number
+    addi t1, t1, 1  # Increment move counter
+    j movedisk       # Repeat the move process
+
+finish:
+    # Exit program
+    li a0, 10        # syscall for exit
     ecall
