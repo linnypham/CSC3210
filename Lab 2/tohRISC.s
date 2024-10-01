@@ -1,65 +1,101 @@
+# Towers of Hanoi
+# MIPS assembly implementation (tested with MARS)
+# Source: https://stackoverflow.com/questions/50382420/hanoi-towers-recursive-solution-using-mips/50383530#50383530
+
 .data
-prompt:      .asciiz "Number of disks: "
-output:      .asciiz "Move disk from peg "
-to:          .asciiz " to peg "
-new_line:    .asciiz "\n"
+prompt: .asciiz "Enter a number: "
+part1: .asciiz "\nMove disk "
+part2: .asciiz " from rod "
+part3: .asciiz " to rod "
 
 .text
 .globl main
-
 main:
-    # Prompt for the number of disks
-    li a7, 4            # syscall for print string
-    la a0, prompt       # load address of prompt
-    ecall
+    li $v0,  4          # print string
+    la $a0,  prompt
+    syscall
+    li $v0,  5          # read integer
+    syscall
 
-    li a7, 5            # syscall for read integer
-    ecall
-    mv a0, a0           # move the read value into a0
+    # parameters for the routine
+    add $a0, $v0, $zero # move to $a0
+    li $a1, 'A'
+    li $a2, 'B'
+    li $a3, 'C'
 
-    # Call the Tower of Hanoi function
-    li a1, 1            # source peg = 1
-    li a2, 2            # target peg = 2
-    li a3, 3            # auxiliary peg = 3
-    jal ra, hanoi       # call hanoi function
+    jal hanoi           # call hanoi routine
 
-    # Exit
-    li a7, 10           # syscall for exit
-    ecall
+    li $v0, 10          # exit
+    syscall
 
-# Function to move n disks from src to dest using aux peg
 hanoi:
-    # Arguments: a0 = number of disks, a1 = src, a2 = dest, a3 = aux
-    beqz a0, hanoi_exit # base case: if n == 0, return
 
-    # Move n-1 disks from src to aux
-    addi a0, a0, -1     # n = n - 1
-    jal ra, hanoi       # call hanoi(n-1, src, aux, dest)
+    #save in stack
+    addi $sp, $sp, -20 
+    sw   $ra, 0($sp)
+    sw   $s0, 4($sp)
+    sw   $s1, 8($sp)
+    sw   $s2, 12($sp)
+    sw   $s3, 16($sp)
 
-    # Move the nth disk from src to dest
-    li a7, 4            # syscall for print string
-    la a0, output       # load address of output
-    ecall
+    add $s0, $a0, $zero
+    add $s1, $a1, $zero
+    add $s2, $a2, $zero
+    add $s3, $a3, $zero
 
-    li a7, 1            # syscall for print integer
-    mv a0, a1           # print source peg
-    ecall
+    addi $t1, $zero, 1
+    beq $s0, $t1, output
 
-    li a7, 4            # syscall for print string
-    la a0, to           # load address of "to" string
-    ecall
+    recur1:
 
-    li a7, 1            # syscall for print integer
-    mv a0, a2           # print destination peg
-    ecall
+        addi $a0, $s0, -1
+        add $a1, $s1, $zero
+        add $a2, $s3, $zero
+        add $a3, $s2, $zero
+        jal hanoi
 
-    li a7, 4            # syscall for print new line
-    la a0, new_line     # load address of new line
-    ecall
+        j output
 
-    # Move n-1 disks from aux to dest
-    addi a0, a0, 1      # n = n + 1
-    jal ra, hanoi       # call hanoi(n-1, aux, dest, src)
+    recur2:
 
-hanoi_exit:
-    ret                  # return from function
+        addi $a0, $s0, -1
+        add $a1, $s3, $zero
+        add $a2, $s2, $zero
+        add $a3, $s1, $zero
+        jal hanoi
+
+    exithanoi:
+
+        lw   $ra, 0($sp)        # restore registers from stack
+        lw   $s0, 4($sp)
+        lw   $s1, 8($sp)
+        lw   $s2, 12($sp)
+        lw   $s3, 16($sp)
+
+        addi $sp, $sp, 20       # restore stack pointer
+
+        jr $ra
+
+    output:
+
+        li $v0,  4              # print string
+        la $a0,  part1
+        syscall
+        li $v0,  1              # print integer
+        add $a0, $s0, $zero
+        syscall
+        li $v0,  4              # print string
+        la $a0,  part2
+        syscall
+        li $v0,  11             # print character
+        add $a0, $s1, $zero
+        syscall
+        li $v0,  4              # print string
+        la $a0,  part3
+        syscall
+        li $v0,  11             # print character
+        add $a0, $s2, $zero
+        syscall
+
+        beq $s0, $t1, exithanoi
+        j recur2
