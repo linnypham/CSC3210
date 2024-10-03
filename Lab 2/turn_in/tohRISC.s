@@ -19,7 +19,7 @@ main:
 
     # Check if the input is in range [3, 20]
     li t1, 3                  # lower bound
-    li t2, 20                 # upper bound
+    li t2, 20                  # upper bound
     blt t0, t1, exit           # if num_disks < 3, exit
     bgt t0, t2, exit           # if num_disks > 20, exit
 
@@ -27,7 +27,6 @@ main:
     li t3, 1                   # source rod = 1
     li t4, 2                   # auxiliary rod = 2
     li t5, 3                   # destination rod = 3
-    mv a0, t0                  # move num_disks to a0
     jal hanoi                  # jump to hanoi function
 
 exit:
@@ -41,9 +40,6 @@ hanoi:
     addi sp, sp, -16           # create stack frame
     sw ra, 12(sp)              # save return address
     sw a0, 8(sp)               # save n
-    sw a1, 4(sp)               # save source
-    sw a2, 0(sp)               # save auxiliary
-    sw a3, -4(sp)              # save destination
 
     # Move n-1 disks from source to auxiliary
     addi a0, a0, -1            # n = n - 1
@@ -51,15 +47,15 @@ hanoi:
 
     # Move the nth disk from source to destination
     lw t0, 8(sp)               # load n
-    lw t1, 4(sp)               # load source
-    lw t2, -4(sp)              # load destination
+    li a0, 1                   # source rod = 1
+    li a1, 3                   # destination rod = 3
     jal move_disk              # call move_disk function
 
     # Restore n and move n-1 disks from auxiliary to destination
     lw a0, 8(sp)               # restore n
     addi a0, a0, -1            # n = n - 1
-    lw a1, 0(sp)               # load auxiliary
-    lw a2, -4(sp)              # load destination
+    li a1, 2                   # auxiliary rod = 2
+    li a2, 3                   # destination rod = 3
     jal hanoi                  # recursive call
 
     # Return from hanoi
@@ -76,14 +72,18 @@ move_disk:
     ecall                      # print result
 
     # Print the source rod
+    lw a0, 8(sp)               # load disk number
     li a7, 1                   # syscall for print_int
-    lw a0, 4(sp)               # load source rod
     ecall
 
     # Print " to rod "
     li a7, 4                   # syscall for print_string
     la a0, newline             # load address of newline
     ecall                      # print newline
+
+    li a7, 4                   # syscall for print_string
+    la a0, result              # load address of result
+    ecall                      # print result
 
     # Print the destination rod
     li a0, 3                   # print destination rod
@@ -93,6 +93,6 @@ move_disk:
     # Print newline after move
     li a7, 4                   # syscall for print_string
     la a0, newline             # load address of newline
-    ecall
+    ecall                      # print newline
 
     jr ra                       # return
