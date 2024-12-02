@@ -1,0 +1,1 @@
+stage_4_intro_alt_bn_gfx.o: stage_4_intro_alt_bn_gfx.s

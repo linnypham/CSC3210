@@ -1,0 +1,1 @@
+stage_2_monsters_1_bn_gfx.o: stage_2_monsters_1_bn_gfx.s

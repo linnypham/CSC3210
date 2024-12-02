@@ -1,0 +1,1 @@
+object_messages_bn_gfx.o: object_messages_bn_gfx.s

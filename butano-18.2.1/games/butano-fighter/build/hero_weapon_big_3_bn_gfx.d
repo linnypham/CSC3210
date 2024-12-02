@@ -1,0 +1,1 @@
+hero_weapon_big_3_bn_gfx.o: hero_weapon_big_3_bn_gfx.s

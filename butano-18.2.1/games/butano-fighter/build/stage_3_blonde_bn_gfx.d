@@ -1,0 +1,1 @@
+stage_3_blonde_bn_gfx.o: stage_3_blonde_bn_gfx.s

@@ -1,0 +1,1 @@
+butano_flash_palette_bn_gfx.o: butano_flash_palette_bn_gfx.s
